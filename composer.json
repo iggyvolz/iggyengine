@@ -2,7 +2,7 @@
     "name": "iggyvolz/iggyengine",
     "description": "PHP game engine using my PHP bindings to SFML",
     "type": "library",
-    "license": "BSD0",
+    "license": "0BSD",
     "autoload": {
         "psr-4": {
             "iggyvolz\\iggyengine\\": "src/"
