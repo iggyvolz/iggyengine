@@ -1,0 +1,24 @@
+{
+    "name": "iggyvolz/iggyengine",
+    "description": "PHP game engine using my PHP bindings to SFML",
+    "type": "library",
+    "license": "BSD0",
+    "autoload": {
+        "psr-4": {
+            "iggyvolz\\iggyengine\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Katie Volz",
+            "email": "iggyvolz@gmail.com"
+        }
+    ],
+    "require": {
+        "iggyvolz/phpsfml": "dev-main",
+        "php": "^8.2",
+        "revolt/event-loop": "^1.0",
+        "psr/event-dispatcher": "^1.0",
+        "league/event": "^3.0"
+    }
+}
