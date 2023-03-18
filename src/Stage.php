@@ -44,6 +44,7 @@ class Stage
             $this->eventDispatcher->dispatch(new UpdateEvent($this->target, $time));
             $this->eventDispatcher->dispatch(new RenderEvent($this->target));
         });
+        EventLoop::run();
     }
 
     /**
