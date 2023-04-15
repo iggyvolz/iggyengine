@@ -10,7 +10,7 @@ use iggyvolz\SFML\Graphics\Transformable;
 use iggyvolz\SFML\System\Vector\Vector2F;
 use League\Event\EventDispatcher;
 
-class GameObject implements Drawable, Transformable
+class GameObject implements Transformable, Drawable
 {
     public readonly EventDispatcher $eventDispatcher;
     public function __construct(

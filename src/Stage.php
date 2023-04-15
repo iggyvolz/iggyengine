@@ -2,27 +2,24 @@
 
 namespace iggyvolz\iggyengine;
 
-use iggyvolz\SFML\Audio\AudioLib;
-use iggyvolz\SFML\Event\ClosedEvent;
-use iggyvolz\SFML\Graphics\GraphicsLib;
 use iggyvolz\SFML\Graphics\RenderWindow;
+use iggyvolz\SFML\Sfml;
 use iggyvolz\SFML\System\Clock;
-use iggyvolz\SFML\System\SystemLib;
-use iggyvolz\SFML\Window\WindowLib;
+use iggyvolz\SFML\Window\Event\ClosedEvent;
 use League\Event\EventDispatcher;
+use League\Event\ListenerPriority;
+use League\Event\ListenerRegistry;
+use League\Event\ListenerSubscriber;
 use Revolt\EventLoop;
 
-class Stage
+final class Stage implements ListenerRegistry
 {
-    public readonly EventDispatcher $eventDispatcher;
+    private readonly EventDispatcher $eventDispatcher;
 
     public function __construct(
+        public readonly Sfml $sfml,
         public readonly RenderWindow $target,
         public readonly int $fps,
-        public readonly SystemLib $systemLib,
-        public readonly AudioLib $audioLib,
-        public readonly GraphicsLib $graphicsLib,
-        public readonly WindowLib $windowLib,
     )
     {
         $this->eventDispatcher = new EventDispatcher();
@@ -30,9 +27,13 @@ class Stage
             $this->target->close();
         });
     }
+    public static function createWindow(Sfml $sfml, string $title, int $fps = 60): self
+    {
+        return new self($sfml, RenderWindow::create($sfml, $title), $fps);
+    }
     public function run(): void
     {
-        $clock = Clock::create($this->systemLib);
+        $clock = Clock::create($this->sfml);
         EventLoop::repeat(1/$this->fps, function(string $id) use ($clock): void {
             $time = $clock->restart();
             if(!$this->target->isOpen()) {
@@ -41,7 +42,7 @@ class Stage
             if($event = $this->target->pollEvent()) {
                 $this->eventDispatcher->dispatch($event);
             }
-            $this->eventDispatcher->dispatch(new UpdateEvent($this->target, $time));
+            $this->eventDispatcher->dispatch(new UpdateEvent($time));
             $this->eventDispatcher->dispatch(new RenderEvent($this->target));
         });
         EventLoop::run();
@@ -58,5 +59,20 @@ class Stage
         $this->eventDispatcher->subscribeTo(RenderEvent::class, function(RenderEvent $e) use ($gameObject): void {
             $gameObject->eventDispatcher->dispatch($e);
         }, $priority);
+    }
+
+    public function subscribeTo(string $event, callable $listener, int $priority = ListenerPriority::NORMAL): void
+    {
+        $this->eventDispatcher->subscribeTo($event, $listener, $priority);
+    }
+
+    public function subscribeOnceTo(string $event, callable $listener, int $priority = ListenerPriority::NORMAL): void
+    {
+        $this->eventDispatcher->subscribeOnceTo($event, $listener, $priority);
+    }
+
+    public function subscribeListenersFrom(ListenerSubscriber $subscriber): void
+    {
+        $this->eventDispatcher->subscribeListenersFrom($subscriber);
     }
 }
