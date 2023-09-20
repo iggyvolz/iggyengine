@@ -39,7 +39,7 @@ final class Stage implements ListenerRegistry
             if(!$this->target->isOpen()) {
                 EventLoop::cancel($id);
             }
-            if($event = $this->target->pollEvent()) {
+            while($event = $this->target->pollEvent()) {
                 $this->eventDispatcher->dispatch($event);
             }
             $this->eventDispatcher->dispatch(new UpdateEvent($time));
