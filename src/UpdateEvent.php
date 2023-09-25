@@ -4,9 +4,9 @@ namespace iggyvolz\iggyengine;
 
 use iggyvolz\SFML\System\Time;
 
-final class UpdateEvent
+final readonly class UpdateEvent
 {
-    public function __construct(public readonly Time $deltaTime)
+    public function __construct(public Time $deltaTime)
     {
     }
 }

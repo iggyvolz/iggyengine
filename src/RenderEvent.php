@@ -2,6 +2,11 @@
 
 namespace iggyvolz\iggyengine;
 
-final class RenderEvent
+use iggyvolz\SFML\Graphics\RenderTarget;
+
+final readonly class RenderEvent
 {
+    public function __construct(public RenderTarget $target)
+    {
+    }
 }

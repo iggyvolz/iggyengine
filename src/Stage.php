@@ -12,18 +12,18 @@ use League\Event\ListenerRegistry;
 use League\Event\ListenerSubscriber;
 use Revolt\EventLoop;
 
-final class Stage implements ListenerRegistry
+final readonly class Stage implements ListenerRegistry
 {
-    private readonly EventDispatcher $eventDispatcher;
+    private EventDispatcher $eventDispatcher;
 
     public function __construct(
-        public readonly Sfml $sfml,
-        public readonly RenderWindow $target,
-        public readonly int $fps,
+        public Sfml         $sfml,
+        public RenderWindow $target,
+        public int          $fps,
     )
     {
         $this->eventDispatcher = new EventDispatcher();
-        $this->eventDispatcher->subscribeTo(ClosedEvent::class, function(ClosedEvent $e): void{
+        $this->eventDispatcher->subscribeTo(ClosedEvent::class, function(): void{
             $this->target->close();
         });
     }
@@ -43,7 +43,9 @@ final class Stage implements ListenerRegistry
                 $this->eventDispatcher->dispatch($event);
             }
             $this->eventDispatcher->dispatch(new UpdateEvent($time));
+            $this->target->clear();
             $this->eventDispatcher->dispatch(new RenderEvent($this->target));
+            $this->target->display();
         });
         EventLoop::run();
     }

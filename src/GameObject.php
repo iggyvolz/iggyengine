@@ -21,6 +21,7 @@ class GameObject implements Transformable, Drawable
     {
         $this->eventDispatcher = new EventDispatcher();
         $stage->add($this, $this->priority);
+        $this->eventDispatcher->subscribeTo(RenderEvent::class, fn(RenderEvent $e) => $this->draw($e->target));
     }
 
     public function draw(RenderTarget $target, ?RenderStates $renderStates = null): void
